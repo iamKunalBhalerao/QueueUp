@@ -1,5 +1,3 @@
-import { BadRequestError } from "@repo/errors";
-import axios from "axios";
 import { NextFunction, Request, Response } from "express";
 import {
   exchangeCodeForToken,
@@ -39,7 +37,7 @@ export const linkedInCallbackController = async (
 
     const profile = await getLinkedInProfile(tokenData.access_token);
 
-    await prisma.socialAccount.upsert({
+    const CallBackData = await prisma.socialAccount.upsert({
       where: {
         userId_provider: {
           userId: userId,
@@ -64,6 +62,7 @@ export const linkedInCallbackController = async (
       data: profile,
       tokenData: tokenData,
       accessToken: tokenData.access_token,
+      CallBackData
     });
   } catch (error) {
     next(error);

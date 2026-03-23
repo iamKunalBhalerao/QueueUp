@@ -20,14 +20,28 @@ model User {
 }
 
 model SocialAccount {
-  id                String   @id @default(cuid())
+  id                String        @id @default(cuid())
   userId            String
-  provider          String
+  provider          Provider
   providerAccountId String
-  accessToken       String   @db.Text
-  refreshToken      String?  @db.Text
+  avatarUrl         String?
+  status            AccountStatus @default(ACTIVE)
+  accessToken       String        @db.Text
+  refreshToken      String?       @db.Text
   expiresAt         DateTime
-  user              User     @relation(fields: [userId], references: [id])
+  user              User          @relation(fields: [userId], references: [id])
 
   @@unique([userId, provider])
+}
+
+enum AccountStatus {
+  ACTIVE
+  EXPIRED
+  REVOKED
+}
+
+enum Provider {
+  LINKEDIN
+  TWITTER
+  FACEBOOK
 }
