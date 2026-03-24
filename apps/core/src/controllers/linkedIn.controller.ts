@@ -58,12 +58,24 @@ export const linkedInCallbackController = async (
       },
     });
 
-    res.json({
-      data: profile,
-      tokenData: tokenData,
-      accessToken: tokenData.access_token,
-      CallBackData
-    });
+    // res.json({
+    //   data: profile,
+    //   tokenData: tokenData,
+    //   accessToken: tokenData.access_token,
+    //   CallBackData
+    // });
+    res
+      .cookie("linkedin_connected", "true", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+      })
+      .cookie("linkedin_access_token", tokenData.access_token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+      });
+    res.redirect(`${process.env.CLIENT_URL}/auth/success`);
   } catch (error) {
     next(error);
   }
