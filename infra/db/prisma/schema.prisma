@@ -54,17 +54,6 @@ model Post {
   user User @relation(fields: [userId], references: [id])
 
   linkedInPost LinkedInPost?
-  postMedias   PostMedia[]
-}
-
-model PostMedia {
-  id       String    @id @default(cuid())
-  postId   String
-  url      String
-  type     MediaType
-  position Int?
-
-  post Post @relation(fields: [postId], references: [id])
 }
 
 model LinkedInPost {
@@ -94,9 +83,4 @@ enum PostStatus {
   SCHEDULED
   PUBLISHED
   FAILED
-}
-
-enum MediaType {
-  IMAGE
-  VIDEO
 }

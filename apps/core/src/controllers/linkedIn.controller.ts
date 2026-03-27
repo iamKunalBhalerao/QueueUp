@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import {
+  createPostService,
   exchangeCodeForToken,
   getLinkedInProfile,
 } from "../services/linkedIn.service";
 import { prisma } from "@infra/db";
+import { createLinkedInPostSchema } from "@repo/shared";
 
 export const linkedInSetupController = async (
   _req: Request,
@@ -145,6 +147,27 @@ export const getLinkedInStatusController = async (
         expiresAt: socialAccount.expiresAt,
         percentRemaining: Math.round((remainingMs / totalMs) * 100)
       }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createLinkedInPostController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.user?.id as string;
+    const validatedData = createLinkedInPostSchema.parse(req.body);
+
+    const post = await createPostService(userId, validatedData);
+
+    res.status(201).json({
+      success: true,
+      message: "Post created successfully",
+      data: post,
     });
   } catch (error) {
     next(error);

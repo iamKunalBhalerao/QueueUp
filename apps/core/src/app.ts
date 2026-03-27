@@ -41,9 +41,11 @@ app.get("/hello", (_req: Request, res: Response) => {
 
 // Importing Routes
 import authRouter from "./routes/auth.routes";
+import linkedInRouter from "./routes/linkedIn.routes";
 
 // Using Routes
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/linkedin", linkedInRouter);
 
 app.use(globalErrorHandler);
 

@@ -46,17 +46,6 @@ CREATE TABLE "Post" (
 );
 
 -- CreateTable
-CREATE TABLE "PostMedia" (
-    "id" TEXT NOT NULL,
-    "postId" TEXT NOT NULL,
-    "url" TEXT NOT NULL,
-    "type" "MediaType" NOT NULL,
-    "position" INTEGER,
-
-    CONSTRAINT "PostMedia_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "LinkedInPost" (
     "id" TEXT NOT NULL,
     "postId" TEXT NOT NULL,
@@ -82,9 +71,6 @@ CREATE UNIQUE INDEX "SocialAccount_userId_platform_key" ON "SocialAccount"("user
 
 -- AddForeignKey
 ALTER TABLE "Post" ADD CONSTRAINT "Post_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "PostMedia" ADD CONSTRAINT "PostMedia_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "LinkedInPost" ADD CONSTRAINT "LinkedInPost_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

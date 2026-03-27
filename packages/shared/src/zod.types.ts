@@ -19,3 +19,11 @@ export const snapShotZodSchema = z.object({
   fsnodeId: z.string().min(1, "fsnodeId is required!"),
   data: z.string().min(1, "Data is required!"), // Array of Base64 strings
 });
+
+export const createLinkedInPostSchema = z.object({
+  content: z.string().min(1, "Content is required"),
+  media: z.array(z.string().url("Invalid URL")).optional().default([]),
+  scheduledAt: z.string().datetime().optional(),
+});
+
+export type CreateLinkedInPostInput = z.infer<typeof createLinkedInPostSchema>;
