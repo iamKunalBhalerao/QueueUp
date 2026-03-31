@@ -15,12 +15,12 @@
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^25.3.0",
-    "prisma": "^7.5.0",
+    "prisma": "^7.6.0",
     "typescript": "^5.9.3"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.4.1",
-    "@prisma/client": "^7.5.0",
+    "@prisma/client": "^7.6.0",
     "dotenv": "^17.3.1"
   }
 }

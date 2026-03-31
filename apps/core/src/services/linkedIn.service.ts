@@ -33,7 +33,26 @@ export const getLinkedInProfile = async (accessToken: string) => {
   return data;
 };
 
-export const createPostService = async (
+export const createScheduledPostService = async (
+  userId: string,
+  postData: CreateLinkedInPostInput,
+) => {
+  // 1. Check if LinkedIn is connected
+  const socialAccount = await getLinkedInSocialAccountDao(userId);
+  if (!socialAccount) {
+    throw new Error("LinkedIn account not connected");
+  }
+
+  const post = await createLinkedInPostDao(userId, postData);
+
+  // 3. If it's not scheduled, we can trigger the worker or immediate publishing
+  // For now, we just return the created post
+  // In a real scenario, you might call a worker here if it's meant to be published immediately
+
+  return post;
+};
+
+export const createImmediatePostService = async (
   userId: string,
   postData: CreateLinkedInPostInput,
 ) => {

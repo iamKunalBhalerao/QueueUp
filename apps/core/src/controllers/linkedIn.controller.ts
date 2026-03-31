@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import {
-  createPostService,
+  createImmediatePostService,
+  createScheduledPostService,
   exchangeCodeForToken,
   getLinkedInProfile,
 } from "../services/linkedIn.service";
@@ -61,24 +62,24 @@ export const linkedInCallbackController = async (
       },
     });
 
-    // res.json({
-    //   data: profile,
-    //   tokenData: tokenData,
-    //   accessToken: tokenData.access_token,
-    //   CallBackData
-    // });
-    res
-      .cookie("linkedin_connected", "true", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-      })
-      .cookie("linkedin_access_token", tokenData.access_token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-      });
-    res.redirect(`${process.env.CLIENT_URL}/auth/success`);
+    res.json({
+      data: profile,
+      tokenData: tokenData,
+      accessToken: tokenData.access_token,
+      CallBackData,
+    });
+    // res
+    //   .cookie("linkedin_connected", "true", {
+    //     httpOnly: true,
+    //     secure: process.env.NODE_ENV === "production",
+    //     sameSite: "lax",
+    //   })
+    //   .cookie("linkedin_access_token", tokenData.access_token, {
+    //     httpOnly: true,
+    //     secure: process.env.NODE_ENV === "production",
+    //     sameSite: "lax",
+    //   });
+    // res.redirect(`${process.env.CLIENT_URL}/auth/success`);
   } catch (error) {
     next(error);
   }
@@ -145,8 +146,8 @@ export const getLinkedInStatusController = async (
       },
       token: {
         expiresAt: socialAccount.expiresAt,
-        percentRemaining: Math.round((remainingMs / totalMs) * 100)
-      }
+        percentRemaining: Math.round((remainingMs / totalMs) * 100),
+      },
     });
   } catch (error) {
     next(error);
@@ -156,13 +157,17 @@ export const getLinkedInStatusController = async (
 export const createLinkedInPostController = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const userId = req.user?.id as string;
     const validatedData = createLinkedInPostSchema.parse(req.body);
 
-    const post = await createPostService(userId, validatedData);
+    const isScheduled = req.query.scheduled === "true";
+
+    const post = isScheduled
+      ? await createScheduledPostService(userId, validatedData)
+      : await createImmediatePostService(userId, validatedData);
 
     res.status(201).json({
       success: true,

@@ -152,3 +152,28 @@ export const refreshTokenController = async (
     next(error);
   }
 };
+
+export const isAuthenticatedController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(200).json({
+        success: false,
+        isAuthenticated: false,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      isAuthenticated: true,
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
